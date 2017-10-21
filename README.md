@@ -4,7 +4,8 @@ Best-deck list builder for Magic: the Gathering Decklists.
 
 Can pull decklists from mtgtop8 or from folder. If creating own lists, decklists are of the format
 
-```4 CARDNAME
+```
+4 CARDNAME
 ...
 2 CARDNAME
 SIDEBOARD
