@@ -76,7 +76,7 @@ def parseDecklist(file):
     decklist = []
     for line in lines:
         line = line.strip()
-        if line == "\n" or line == "Sideboard" or line == "":
+        if line == "\n" or line.lower() == "sideboard" or line == "":
             break
         num = int(line[:line.index(" ")])
         name = line[line.index(" ") + 1:]
