@@ -16,7 +16,7 @@ Works off of essentially a best will-of-the-crowd. Uses cards appearing with eac
 
 Todo is to add capability to do sideboard.
 
-Based roughly off of Frank Karsten's [A New Way to Determine an Aggregate Deck List, but with more math.](https://www.channelfireball.com/articles/magic-math-a-new-way-to-determine-an-aggregate-deck-list-rg-dragons/), as the method used in this program iterates through and determines the cards with the best synergies that are still left in the pool, not just by raw number counts.
+Based roughly off of Frank Karsten's [A New Way to Determine an Aggregate Deck List](https://www.channelfireball.com/articles/magic-math-a-new-way-to-determine-an-aggregate-deck-list-rg-dragons/), but with more math, as the method used in this program iterates through and determines the cards with the best synergies that are still left in the pool, not just by raw number counts.
 
 To use:
 ```
