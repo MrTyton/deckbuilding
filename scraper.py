@@ -8,6 +8,7 @@ This module scrapes the first page of the linked mtgtop8 page and pulls all of t
 Does not yet scrape the second+ pages due to javascript shenanigans.
 """
 
+
 def load_page(url):
     print "Loading page..."
     resp = get(url)
@@ -16,7 +17,8 @@ def load_page(url):
         return
     bs = BS(resp.text, "html.parser")
     tables = bs.find_all("table")
-    decklist_tables = tables[4] #this should be it always, unless it changes the format of the site
+    # this should be it always, unless it changes the format of the site
+    decklist_tables = tables[4]
     decks = decklist_tables.find_all("tr", class_="hover_tr")
     urls = ["http://mtgtop8.com/{}".format(x.find("a")['href']) for x in decks]
     print "{} decks to download and process...".format(len(urls))
@@ -24,8 +26,8 @@ def load_page(url):
     for cur in tqdm(urls):
         decklists.append(parse_deck_page(cur))
     return decklists
-    
-    
+
+
 def parse_deck_page(url):
     resp = get(url)
     if resp.status_code != 200:
@@ -33,8 +35,9 @@ def parse_deck_page(url):
         return
     bs = BS(resp.text, "html.parser")
     try:
-        link = "http://mtgtop8.com/{}".format(bs.find("a", text="MTGO")['href'].encode("utf-8"))
-    except:
+        link = "http://mtgtop8.com/{}".format(
+            bs.find("a", text="MTGO")['href'].encode("utf-8"))
+    except BaseException:
         print url
     resp = get(link)
     if resp.status_code != 200:
@@ -44,8 +47,3 @@ def parse_deck_page(url):
         fp.write(resp.text)
         name = fp.name
     return name
-    
-    
-    
-    
-    
