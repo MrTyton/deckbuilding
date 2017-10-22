@@ -47,7 +47,6 @@ def run(n=2, mypath=None, onlyfiles=None, generate=False):
     mainDeck = compute(ranks.getCollective(), ranks, 60)
     print "Computing final sideboard..."
     sideBoard = compute(sbranks.getCollective(), sbranks, 15)
-    print "Maindeck:"
     if generate:
         base_url = "http://www.decklist.org/?"
         url = "{}deckmain={}&deckside={}".format(
@@ -60,6 +59,7 @@ def run(n=2, mypath=None, onlyfiles=None, generate=False):
                         " ", "%20")) for name, quantity in sideBoard))
         print "Generated decklist url:\n\t{}".format(url)
     else:
+        print "Maindeck:"
         for name, quantity in mainDeck:
             print "\t{} {}".format(quantity, name)
         print "Sideboard:"
