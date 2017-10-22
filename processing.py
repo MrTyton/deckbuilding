@@ -28,7 +28,7 @@ def compute(collective, rankings, deck_size=60):
     return finallist
 
 
-def run(n=2, mypath=None, onlyfiles=None):
+def run(n=2, mypath=None, onlyfiles=None, generate=False):
     if mypath:
         onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
         onlyfiles = ["{}/{}".format(mypath, x) for x in onlyfiles]
@@ -48,11 +48,23 @@ def run(n=2, mypath=None, onlyfiles=None):
     print "Computing final sideboard..."
     sideBoard = compute(sbranks.getCollective(), sbranks, 15)
     print "Maindeck:"
-    for name, quantity in mainDeck:
-        print "\t{} {}".format(quantity, name)
-    print "Sideboard:"
-    for name, quantity in sideBoard:
-        print "\t{} {}".format(quantity, name)
+    if generate:
+        base_url = "http://www.decklist.org/?"
+        url = "{}deckmain={}&deckside={}".format(
+            base_url, "%0A".join(
+                "{}%09{}".format(
+                    quantity, name.replace(
+                        " ", "%20")) for name, quantity in mainDeck), "%0A".join(
+                "{}%09{}".format(
+                    quantity, name.replace(
+                        " ", "%20")) for name, quantity in sideBoard))
+        print "Generated decklist url:\n\t{}".format(url)
+    else:
+        for name, quantity in mainDeck:
+            print "\t{} {}".format(quantity, name)
+        print "Sideboard:"
+        for name, quantity in sideBoard:
+            print "\t{} {}".format(quantity, name)
 
 
 if __name__ == "__main__":
@@ -79,6 +91,12 @@ if __name__ == "__main__":
         action="store",
         type="string",
         help="Path to folder containing decklists. Either this or -u must be specified.")
+    option_parser.add_option(
+        "-g",
+        "--generate",
+        dest="generate",
+        action="store_true",
+        help="Generate a decklist.org decklist with the output.")
 
     options, args = option_parser.parse_args()
     if not options.url and not options.folder:
@@ -89,7 +107,7 @@ if __name__ == "__main__":
         exit()
     if options.url:
         options.url = load_page(options.url)
-    run(options.n, options.folder, options.url)
+    run(options.n, options.folder, options.url, options.generate)
     if options.url:
         for cur in options.url:
             remove(cur)
