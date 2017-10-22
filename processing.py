@@ -2,7 +2,7 @@ from classes import Ranking, parseDecklist
 from os import listdir, remove
 from os.path import isfile, join
 from tqdm import tqdm
-from scraper import load_page, parse_deck_page
+from scraper import load_page
 from optparse import OptionParser
 
 

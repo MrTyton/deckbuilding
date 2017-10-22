@@ -84,7 +84,7 @@ def parseDecklist(file, sideboard=False):
         if sideboard and not check:
             if line != "" and line != "\n" and line.lower() != "sideboard":
                 continue
-            else:   
+            else:
                 check = True
                 continue
         match = cardParse.search(line)
