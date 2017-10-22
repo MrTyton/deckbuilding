@@ -6,9 +6,11 @@ from scraper import load_page, parse_deck_page
 from optparse import OptionParser
 
 
-def compute(collective, rankings):
-    print "Removing {} cards from pool...".format(len(collective) - 60)
-    for _ in tqdm(range(len(collective) - 60)):
+def compute(collective, rankings, deck_size=60):
+    if len(collective) < deck_size:
+        print "There are not enough cards to make a legal deck. ({} cards passed in, need to end up with {})".format(len(collective), deck_size)
+    print "Removing {} cards from pool...".format(len(collective) - deck_size)
+    for _ in tqdm(range(len(collective) - deck_size)):
         for cards, rank in rankings.getNext():
             if not all(x in collective for x in cards):
                 del rankings.rankings[cards]
@@ -33,13 +35,24 @@ def run(n=2, mypath=None, onlyfiles=None):
     decklists = [parseDecklist(x) for x in onlyfiles]
 
     ranks = Ranking()
-    for i, x in enumerate(decklists):
-        print "Adding decklist number %d" % (i + 1)
-        ranks.addDeck(x, n)
-    print "Computing final decklist"
-    results = compute(ranks.getCollective(), ranks)
-    for name, quantity in results:
-        print "{} {}".format(quantity, name)
+    print "Adding {} decklists...".format(len(decklists))
+    for deck in tqdm(decklists):
+        ranks.addDeck(deck, n)
+    print "Adding sideboards..."
+    sbranks = Ranking()
+    sideboards = [parseDecklist(x, sideboard=True) for x in onlyfiles]
+    for sideboard in tqdm(sideboards):
+        sbranks.addDeck(sideboard, n)
+    print "Computing final decklist..."
+    mainDeck = compute(ranks.getCollective(), ranks, 60)
+    print "Computing final sideboard..."
+    sideBoard = compute(sbranks.getCollective(), sbranks, 15)
+    print "Maindeck:"
+    for name, quantity in mainDeck:
+        print "\t{} {}".format(quantity, name)
+    print "Sideboard:"
+    for name, quantity in sideBoard:
+        print "\t{} {}".format(quantity, name)
 
 
 if __name__ == "__main__":

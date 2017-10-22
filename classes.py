@@ -1,13 +1,17 @@
 from itertools import combinations
+import re
+
+cardParse = re.compile("(?P<quantity>\d) (?P<name>.+)")
 
 all_cards = {}
 
 
 class Card():
-    def __init__(self, name, position):
+    def __init__(self, name, position, sideboard=False):
         self.name = name
         self.position = position
         self.uprank = 0.
+        self.sideboard = sideboard
 
     def updateRank(self, num):
         self.uprank += num
@@ -70,18 +74,26 @@ class Ranking():
         return set([x for y in self.rankings.keys() for x in y])
 
 
-def parseDecklist(file):
+def parseDecklist(file, sideboard=False):
     with open(file, "r") as fp:
         lines = fp.readlines()
     decklist = []
+    check = False
     for line in lines:
         line = line.strip()
-        if line == "\n" or line.lower() == "sideboard" or line == "":
+        if sideboard and not check:
+            if line != "" and line != "\n" and line.lower() != "sideboard":
+                continue
+            else:   
+                check = True
+                continue
+        match = cardParse.search(line)
+        if match:
+            match = match.groupdict()
+        else:
             break
-        num = int(line[:line.index(" ")])
-        name = line[line.index(" ") + 1:]
-        for i in range(1, num + 1):
-            insert = Card(name, i)
+        for i in range(1, int(match['quantity']) + 1):
+            insert = Card(match['name'], i, sideboard)
             if insert not in all_cards:
                 all_cards[insert] = insert
             decklist.append(all_cards[insert])
