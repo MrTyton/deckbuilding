@@ -12,14 +12,13 @@ def compute(collective, rankings, deck_size=60):
     print "Removing {} cards from pool...".format(len(collective) - deck_size)
     for _ in tqdm(range(len(collective) - deck_size)):
         for cards, rank in rankings.getNext():
-            if not all(x in collective for x in cards):
-                del rankings.rankings[cards]
-                continue
+            updater = rank * (1. / (2 ** len(cards)))
             for card in cards:
-                card.updateRank(rank * (1. / (2 ** len(cards))))
+                card.updateRank(updater)
         collective = sorted(
             collective, key=lambda x: (
                 x.uprank, 100 - x.position))
+        rankings.remove(collective[0])
         collective = collective[1:]
         [x.resetRank() for x in collective]
     names = set(x.name for x in collective)

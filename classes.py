@@ -72,6 +72,9 @@ class Ranking():
 
     def getCollective(self):
         return set([x for y in self.rankings.keys() for x in y])
+        
+    def remove(self, item):
+        self.rankings = {i:v for i, v in self.rankings.items() if item not in i}
 
 
 def parseDecklist(file, sideboard=False):
