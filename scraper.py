@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup as BS
 from requests import get
 from tempfile import NamedTemporaryFile
 from tqdm import tqdm
+from multiprocessing import Pool
 
 """
 This module scrapes the first page of the linked mtgtop8 page and pulls all of the decklists into temporary files.
@@ -22,9 +23,8 @@ def load_page(url):
     decks = decklist_tables.find_all("tr", class_="hover_tr")
     urls = ["http://mtgtop8.com/{}".format(x.find("a")['href']) for x in decks]
     print "{} decks to download and process...".format(len(urls))
-    decklists = []
-    for cur in tqdm(urls):
-        decklists.append(parse_deck_page(cur))
+    p = Pool()
+    decklists = list(tqdm(p.imap(parse_deck_page, urls), total=len(urls)))
     return decklists
 
 
