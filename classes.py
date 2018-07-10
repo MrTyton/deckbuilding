@@ -1,7 +1,7 @@
 from itertools import combinations
 import re
 
-cardParse = re.compile("(?P<quantity>\d) (?P<name>.+)")
+cardParse = re.compile("(?P<quantity>\d*) (?P<name>.+)")
 
 all_cards = {}
 
